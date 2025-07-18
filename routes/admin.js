@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const { adminmodel, coursemodel } = require('../db');
 const jwt = require('jsonwebtoken');
 const { authadmin, adminJWT_SECRET } = require("../middleware/adminauth.js");
+const AdminSecretPassword = process.env.ADMIN_PASSWORD;
 
 router.post('/signup', async (req, res) => {
     //input validation
@@ -57,6 +58,7 @@ router.post('/login', async(req, res) => {
     try {
           const email=req.body.email;
           const password=req.body.password;
+          const adminpassword=req.body.adminpassword;
         const admin = await adminmodel.findOne({ email });
         if (!admin) {
             return res.status(403).json({
@@ -65,7 +67,7 @@ router.post('/login', async(req, res) => {
         }
 
         const passwordmatch = await  bcrypt.compare(password, admin.password);
-        if (passwordmatch) {
+        if (passwordmatch && adminpassword==AdminSecretPassword) {
             const token = jwt.sign({
                 id: admin._id
             }, adminJWT_SECRET);

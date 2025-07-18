@@ -19,8 +19,8 @@ const app = express();
 
 
 // Connect to MongoDB
- mongoose.connect('mongodb+srv://tarunsaxena1712:Tarun%402022@dataclustor.h1aggub.mongodb.net/coursedata');
-  
+const mongoURI = process.env.MONGODB_URI;
+mongoose.connect(mongoURI);
 
 // Middleware
 app.use(express.json());
